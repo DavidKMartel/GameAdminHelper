@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+</head>
+<body>
+<div id="here" style="text-align:center"> 
+
+	
+	</form>
+</div>
+
+<script type="text/javascript">
+var url='List%20of%20maps%20-%20Official%20TF2%20Wiki%20%20%20Official%20Team%20Fortress%20Wiki.html';
+var end;
+$.ajax({
+       url: url,
+       type: 'GET',
+       success: function(data) {
+       		$(data).find('table.grid').each(function() {
+       			end+="<form id='mapcommand' action='ExecuteCommand.php' method='post'><input type='submit' command='map'> <table>";
+	            $(this).find('tr').each(function() {
+	            	end+="<tr>";
+	            	end+="<td><input type='radio' name='map'>";
+	            	$(this).find('td:first-child').each(function() {
+	            		end+=$(this).find('a:first-child').val();
+	            		end+="</input>"
+	            	})
+		            $(this).find('td:lt(4)').each(function(){
+						end+="<td>";
+
+				  		end+=$(this).html();
+				  		end+="</td>";
+				  })
+		            end+="</tr>";
+
+				})
+            });
+            end+="</table>";
+            $('#here').prepend(end);
+       }
+     });
+$('#mapcommand').submit(function(event) {
+	$("input").prepend("changelevel ");
+	$("p").append($("input").html());
+	return;
+})
+
+</script>
+
+</body>
+</html>

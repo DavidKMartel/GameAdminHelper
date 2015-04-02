@@ -49,8 +49,9 @@ function get(){
 
         $.post(
             'ExecuteCommand.php', 
-            { command: "changelevel " + $('input:radio[name=map]').val() },
+            { command: "changelevel " + $('input:radio[name=map]:checked').val() },
             function(output){
+            	alert($('input:radio[name=map]:checked').val());
                 $('#error').html(output).fadeIn(100);
             }
         )       

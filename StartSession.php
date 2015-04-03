@@ -32,7 +32,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </form>
 <?php
 	if($_SESSION['valid']) {
-		echo "Login Successful <a href=\"ExecuteCommand.php\">Continue</a>";
+		echo "Login Successful <a href=\"EnterCommand.php\">Continue</a>";
 	} else {
 		echo "<b><font color=\"red\">Invalid Login</font></a>";
 	}

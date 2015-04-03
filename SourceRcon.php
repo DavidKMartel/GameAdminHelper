@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-
 define("SERVERDATA_AUTH",3);
 define("SERVERDATA_AUTH_RESPONSE",2);
 define("SERVERDATA_EXECCOMMAND",2);
@@ -43,21 +41,21 @@ class SourceRcon
 		$response = socket_read($this->socket, $size[1], PHP_BINARY_READ);
 
 		//strip everything but the message
-		$response = substr($response, 8, $size[1] - 10);
+		$response = substr($response, 8, -2);
 		return $response;
 	}
 
 	function login() {
 		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if($this->socket == false) {
-			echo "<b><font color=\"red\">Failed to open socket</font></b>";
+			//echo "<b><font color=\"red\">Failed to open socket</font></b>";
 			return false;
 		}
 
 		//socket_set_nonblock($this->socket);
 		flush();
 		if(socket_connect($this->socket, $this->host, $this->port) === false) {
-			echo "<b><font color=\"red\">Failed to connect to socket</font></b>";
+			//echo "<b><font color=\"red\">Failed to connect to socket</font></b>";
 			return false;
 		}
 
@@ -94,9 +92,12 @@ function executeCommand($address, $port, $password, $command) {
 function handlePost() {
 	if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "Submit") {
 		global $command, $response;
-		$address = $_POST["address"];
-		$port = $_POST["port"];
-		$password = $_POST["password"];
+		//$address = $_POST["address"];
+		//$port = $_POST["port"];
+		//$password = $_POST["password"];
+		$address = $_SESSION["address"];
+		$port = $_SESSION["port"];
+		$password = $_SESSION["password"];
 		$command = $_POST["command"];
 
 		$response = executeCommand($address, $port, $password, $command);

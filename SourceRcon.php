@@ -90,7 +90,7 @@ function executeCommand($address, $port, $password, $command) {
 }
 
 function handlePost() {
-	if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "Submit") {
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		global $command, $response;
 		//$address = $_POST["address"];
 		//$port = $_POST["port"];

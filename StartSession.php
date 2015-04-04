@@ -3,7 +3,7 @@ include 'SourceRcon.php';
 include 'UsefulFunctions.php';
 session_start();
 
-define("DEFAULT_ADDRESS","10.0.0.150");
+define("DEFAULT_ADDRESS","172.17.0.106");
 define("DEFAULT_PORT","27015");
 define("DEFAULT_PASSWORD","pass");
 

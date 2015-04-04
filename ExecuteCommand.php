@@ -2,5 +2,5 @@
 session_start();
 include 'SourceRcon.php';
 
-handlePost();
+echo handlePost();
 ?>

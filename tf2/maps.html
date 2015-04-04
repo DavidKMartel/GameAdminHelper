@@ -51,7 +51,7 @@ $.ajax({
 function get(){
         $('#error').hide();
         $.post(
-            'ExecuteCommand.php', 
+            '/ExecuteCommand.php',
             { command: "changelevel " + $('input:radio[name=map]:checked').val() },
             function(output){
             	alert($('input:radio[name=map]:checked').val());

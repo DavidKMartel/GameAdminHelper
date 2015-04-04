@@ -13,7 +13,7 @@
 	  $(document).ready(function() {
 	  	
 	    $.post(
-            '/EnterCommand.php', 
+            '/ExecuteCommand.php', 
             { command: "cvarlist"},
             function(output){
             	prettify(output);
@@ -29,6 +29,7 @@
 	  	for(var command in lines) {
 	  		end += addHTML(command);
 	  	}
+	  	$('#commandlist').append(end);
 	  }
 
 	  function addHTML(str) {
@@ -40,7 +41,15 @@
 	  }
 	  function expandCommand(element) {
 	  	var divValue = element.val();
-	  	$("#"+divValue).append("<input type='text' name='command'>" + divValue);
+	  	$.post(
+            '/ExecuteCommand.php', 
+            { command: divValue},
+            function(output){
+            	$("#"+divValue).append(output);
+                $('#error').html(output).fadeIn(100);
+            }
+        )
+	  	$("#"+divValue).append("<div id='commandinfo'><input type='text' name='command'>" + divValue + "</div>");
 	  }
 
 	</script>

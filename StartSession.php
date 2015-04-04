@@ -22,15 +22,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION['port'] = $_POST["port"];
 	$_SESSION['password'] = $_POST["password"];
 
-	//test connection by executing a command
-	$response = trim(executeCommand($_SESSION['address'],
-		$_SESSION['port'], $_SESSION['password'], "echo hi"));
-	if("hi" == $response) {
-		$_SESSION['valid'] = true;
-		
-	} else {
-		$_SESSION['valid'] = false;
-	}
+	$_SESSION['valid'] = testLogin($_SESSION['address'],
+		$_SESSION['port'], $_SESSION['password']);
 }
 ?>
 

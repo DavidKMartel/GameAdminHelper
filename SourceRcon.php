@@ -71,9 +71,10 @@ class SourceRcon
 		}
 
 		$this->write(SERVERDATA_AUTH,$this->password);
-		$this->readPacket();
+		$packet = $this->readPacket();
 		//for some reason, we need to eat extra stuff
-		$this->readPacket();
+		$packet = $this->readPacket();
+		return $packet["TYPE"] == SERVERDATA_AUTH_RESPONSE;
 	}
 
 	function execute($command) {
@@ -89,15 +90,29 @@ class SourceRcon
 $command;
 $response;
 
+function testLogin($address, $port, $password) {
+	$rcon = new SourceRcon();
+	$rcon->setHost($address);
+	$rcon->setPort($port);
+	$rcon->setPassword($password);
+	$success = $rcon->login();
+	$rcon->close();
+	return $success;
+}
+
 function executeCommand($address, $port, $password, $command) {
 	$rcon = new SourceRcon();
 	$rcon->setHost($address);
 	$rcon->setPort($port);
 	$rcon->setPassword($password);
-	$rcon->login();
-	$response = $rcon->execute($command);
-	$rcon->close();
-	return $response;
+	if($rcon->login()) {
+		$response = $rcon->execute($command);
+		$rcon->close();
+		return $response;
+	} else {
+		$rcon->close();
+		return false;
+	}
 }
 
 function handlePost() {

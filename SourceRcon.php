@@ -34,14 +34,25 @@ class SourceRcon
 		socket_write($this->socket, $message, strlen($message));
 	}
 
-	function read() {
-		//read in the size of the message
-		$size = unpack("V",socket_read($this->socket, 4, PHP_BINARY_READ));
+	/* Reads in one packet.
+	 *	@return Array representing the packet
+	 *		"SIZE"
+	 *		"ID"
+	 *		"TYPE"
+	 *		"BODY"
+	*/
+	function readPacket() {
+		//read in the size of the packet
+		$size = unpack("V",socket_read($this->socket, 4, PHP_BINARY_READ))[1];
+		//read rest of packet
+		$buffer = socket_read($this->socket, $size, PHP_BINARY_READ);
+		$response = unpack("VID/VTYPE/a*BODY",$buffer);
 
-		$response = socket_read($this->socket, $size[1], PHP_BINARY_READ);
-
-		//strip everything but the message
-		$response = substr($response, 8, -2);
+		//remove trailing nulls from body
+		$response["BODY"] = substr($response["BODY"],0,-2);
+		//add in size
+		$response["SIZE"] = $size;
+		
 		return $response;
 	}
 
@@ -60,14 +71,14 @@ class SourceRcon
 		}
 
 		$this->write(SERVERDATA_AUTH,$this->password);
-		$this->read();
+		$this->readPacket();
 		//for some reason, we need to eat extra stuff
-		$this->read();
+		$this->readPacket();
 	}
 
 	function execute($command) {
 		$this->write(SERVERDATA_EXECCOMMAND, $command);
-		return $this->read();
+		return $this->readPacket()["BODY"];
 	}
 
 	function close() {

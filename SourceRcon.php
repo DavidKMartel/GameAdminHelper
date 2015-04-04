@@ -66,7 +66,7 @@ class SourceRcon
 
 		socket_set_option($this->socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>1, "usec"=>0));
 		if(socket_connect($this->socket, $this->host, $this->port) === false) {
-			//echo "<b><font color=\"red\">Failed to connect to socket</font></b>";
+			echo "<b><font color=\"red\">Failed to connect to socket</font></b>";
 			return false;
 		}
 

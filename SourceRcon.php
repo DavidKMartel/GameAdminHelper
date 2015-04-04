@@ -46,14 +46,15 @@ class SourceRcon
 		//read in the size of the packet
 		$size = unpack("V",socket_read($this->socket, 4, PHP_BINARY_READ))[1];
 		//read rest of packet
-		$buffer = socket_read($this->socket, $size, PHP_BINARY_READ);
+		$bytesRead = socket_recv($this->socket, $buffer, $size, MSG_WAITALL);
+		//socket_read is non blocking
+		//$buffer = socket_read($this->socket, $size, PHP_BINARY_READ);
 		$response = unpack("VID/VTYPE/a*BODY",$buffer);
 
 		//remove trailing nulls from body
 		$response["BODY"] = substr($response["BODY"],0,-2);
 		//add in size
 		$response["SIZE"] = $size;
-		
 		return $response;
 	}
 
@@ -82,7 +83,7 @@ class SourceRcon
 		//it is guaranteed that when a response from the next command is recieved,
 		//all of the responses from the previous command have been revieved
 		$commId = $this->write(SERVERDATA_EXECCOMMAND, $command);
-		$this->write(SERVERDATA_EXECCOMMAND, "");
+		$this->write(SERVERDATA_RESPONSE_VALUE, "");
 		$packet;
 		$body = "";
 		do {
@@ -137,6 +138,7 @@ function handlePost() {
 		$command = $_POST["command"];
 
 		$response = executeCommand($address, $port, $password, $command);
+		return $response;
 	}
 }
 

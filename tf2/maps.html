@@ -5,8 +5,6 @@
 <link rel="stylesheet" href="https://wiki.teamfortress.com/w/load.php?debug=false&lang=en&modules=ext.rtlcite%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.skinning.interface%7Cmediawiki.ui.button%7Cskins.vector.styles&only=styles&skin=vector&*">
 </head>
 <body>
-<h1 id="foff">This is a heading</h1>
-<p>This is a paragraph.</p>
 <div id="error">
 </div>
 <div id="here" style="text-align:left"> 
@@ -52,7 +50,6 @@ $.ajax({
 </script><script type="text/javascript">
 function get(){
         $('#error').hide();
-
         $.post(
             'ExecuteCommand.php', 
             { command: "changelevel " + $('input:radio[name=map]:checked').val() },

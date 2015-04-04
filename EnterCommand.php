@@ -6,6 +6,7 @@
 
 	if($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "Submit") {
 		handlePost();
+		$response = nl2br($response);
 	}
 	?>
 

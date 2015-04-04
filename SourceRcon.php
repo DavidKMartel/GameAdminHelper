@@ -30,8 +30,9 @@ class SourceRcon
 	}
 
 	function write($type, $body) {
-		$message = pack("VVV", strlen($body)+10,$this->id++,$type) . $body . pack("S",0);
+		$message = pack("VVV", strlen($body)+10,$this->id,$type) . $body . pack("S",0);
 		socket_write($this->socket, $message, strlen($message));
+		return $this->id++;
 	}
 
 	/* Reads in one packet.
@@ -63,8 +64,7 @@ class SourceRcon
 			return false;
 		}
 
-		//socket_set_nonblock($this->socket);
-		flush();
+		socket_set_option($this->socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>1, "usec"=>0));
 		if(socket_connect($this->socket, $this->host, $this->port) === false) {
 			//echo "<b><font color=\"red\">Failed to connect to socket</font></b>";
 			return false;
@@ -78,8 +78,18 @@ class SourceRcon
 	}
 
 	function execute($command) {
-		$this->write(SERVERDATA_EXECCOMMAND, $command);
-		return $this->readPacket()["BODY"];
+		//there is no way of knowing when the packets will stop
+		//it is guaranteed that when a response from the next command is recieved,
+		//all of the responses from the previous command have been revieved
+		$commId = $this->write(SERVERDATA_EXECCOMMAND, $command);
+		$this->write(SERVERDATA_EXECCOMMAND, "");
+		$packet;
+		$body = "";
+		do {
+			$packet = $this->readPacket();
+			$body .= $packet["BODY"];
+		} while($packet["ID"] == $commId);
+		return $body;
 	}
 
 	function close() {

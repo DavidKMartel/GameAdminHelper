@@ -30,18 +30,30 @@ class SourceRcon
 	}
 
 	function write($type, $body) {
-		$message = pack("VVV", strlen($body)+10,$this->id++,$type) . $body . pack("S",0);
+		$message = pack("VVV", strlen($body)+10,$this->id,$type) . $body . pack("S",0);
 		socket_write($this->socket, $message, strlen($message));
+		return $this->id++;
 	}
 
-	function read() {
-		//read in the size of the message
-		$size = unpack("V",socket_read($this->socket, 4, PHP_BINARY_READ));
+	/* Reads in one packet.
+	 *	@return Array representing the packet
+	 *		"SIZE"
+	 *		"ID"
+	 *		"TYPE"
+	 *		"BODY"
+	*/
+	function readPacket() {
+		//read in the size of the packet
+		$size = unpack("V",socket_read($this->socket, 4, PHP_BINARY_READ))[1];
+		//read rest of packet
+		$buffer = socket_read($this->socket, $size, PHP_BINARY_READ);
+		$response = unpack("VID/VTYPE/a*BODY",$buffer);
 
-		$response = socket_read($this->socket, $size[1], PHP_NORMAL_READ);
-
-		//strip everything but the message
-		$response = substr($response, 8, -2);
+		//remove trailing nulls from body
+		$response["BODY"] = substr($response["BODY"],0,-2);
+		//add in size
+		$response["SIZE"] = $size;
+		
 		return $response;
 	}
 
@@ -52,22 +64,32 @@ class SourceRcon
 			return false;
 		}
 
-		//socket_set_nonblock($this->socket);
-		flush();
+		socket_set_option($this->socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>1, "usec"=>0));
 		if(socket_connect($this->socket, $this->host, $this->port) === false) {
 			//echo "<b><font color=\"red\">Failed to connect to socket</font></b>";
 			return false;
 		}
 
 		$this->write(SERVERDATA_AUTH,$this->password);
-		$this->read();
+		$packet = $this->readPacket();
 		//for some reason, we need to eat extra stuff
-		$this->read();
+		$packet = $this->readPacket();
+		return $packet["TYPE"] == SERVERDATA_AUTH_RESPONSE;
 	}
 
 	function execute($command) {
-		$this->write(SERVERDATA_EXECCOMMAND, $command);
-		return $this->read();
+		//there is no way of knowing when the packets will stop
+		//it is guaranteed that when a response from the next command is recieved,
+		//all of the responses from the previous command have been revieved
+		$commId = $this->write(SERVERDATA_EXECCOMMAND, $command);
+		$this->write(SERVERDATA_EXECCOMMAND, "");
+		$packet;
+		$body = "";
+		do {
+			$packet = $this->readPacket();
+			$body .= $packet["BODY"];
+		} while($packet["ID"] == $commId);
+		return $body;
 	}
 
 	function close() {
@@ -78,15 +100,29 @@ class SourceRcon
 $command;
 $response;
 
+function testLogin($address, $port, $password) {
+	$rcon = new SourceRcon();
+	$rcon->setHost($address);
+	$rcon->setPort($port);
+	$rcon->setPassword($password);
+	$success = $rcon->login();
+	$rcon->close();
+	return $success;
+}
+
 function executeCommand($address, $port, $password, $command) {
 	$rcon = new SourceRcon();
 	$rcon->setHost($address);
 	$rcon->setPort($port);
 	$rcon->setPassword($password);
-	$rcon->login();
-	$response = $rcon->execute($command);
-	$rcon->close();
-	return $response;
+	if($rcon->login()) {
+		$response = $rcon->execute($command);
+		$rcon->close();
+		return $response;
+	} else {
+		$rcon->close();
+		return false;
+	}
 }
 
 function handlePost() {

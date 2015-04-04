@@ -1,6 +1,6 @@
 <?php
 include 'SourceRcon.php';
-include 'usefulFunctions.php';
+include 'UsefulFunctions.php';
 session_start();
 
 define("DEFAULT_ADDRESS","10.0.0.150");

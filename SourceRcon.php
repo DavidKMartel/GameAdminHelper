@@ -38,7 +38,7 @@ class SourceRcon
 		//read in the size of the message
 		$size = unpack("V",socket_read($this->socket, 4, PHP_BINARY_READ));
 
-		$response = socket_read($this->socket, $size[1], PHP_BINARY_READ);
+		$response = socket_read($this->socket, $size[1], PHP_NORMAL_READ);
 
 		//strip everything but the message
 		$response = substr($response, 8, -2);

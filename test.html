@@ -2,7 +2,7 @@
 <html>
 <head>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-
+<link rel="stylesheet" href="https://wiki.teamfortress.com/w/load.php?debug=false&lang=en&modules=ext.rtlcite%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.skinning.interface%7Cmediawiki.ui.button%7Cskins.vector.styles&only=styles&skin=vector&*">
 </head>
 <body>
 <h1 id="foff">This is a heading</h1>
@@ -22,16 +22,22 @@ $.ajax({
        type: 'GET',
        success: function(data) {
        		$(data).find('table.grid').each(function() {
-       			end+="<table>";
+       			end+="<table class='wikitable sortable grid jquery-tablesorter'>";
+       			$(this).find('tr:first-child').each(function() {
+       				end+="<tr>"
+       				$(this).find('th:lt(4)').each(function(){
+       					
+				  		end+=$(this).html();
+				  		
+       			})
+       				end+="</tr>";
+       			});
 	            $(this).find('tr:not(:first-child)').each(function() {
 	            	end+="<tr>";
 	            	end+="<td><input type='radio' name='map' value ='" + $(this).find('code').html() + "'>";
-	            		end+=$(this).find('code').html();
 	            		end+="</input></td>";
 		            $(this).find('td:lt(4)').each(function(){
-		            	
 						end+="<td>";
-
 				  		end+=$(this).html();
 				  		end+="</td>";
 				  })

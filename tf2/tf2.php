@@ -13,10 +13,10 @@
 	  $(document).ready(function() {
 	  	
 	    $.post(
-            '/EnterCommand.php', 
+            '/ExecuteCommand.php', 
             { command: "cvarlist"},
             function(output){
-      		$('#commandlist').append("<?php echo $response; ?>");
+      		$('#commandlist').append(output);
                 $('#error').html(output).fadeIn(100);
             }
         )

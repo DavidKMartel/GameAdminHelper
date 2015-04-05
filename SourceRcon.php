@@ -75,7 +75,9 @@ class SourceRcon
 		$packet = $this->readPacket();
 		//for some reason, we need to eat extra stuff
 		$packet = $this->readPacket();
-		return $packet["TYPE"] == SERVERDATA_AUTH_RESPONSE;
+
+		return $packet["TYPE"] == SERVERDATA_AUTH_RESPONSE
+			&& $packet["ID"] == $this->id -1;
 	}
 
 	function execute($command) {

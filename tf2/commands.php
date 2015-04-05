@@ -68,7 +68,6 @@ function addHTML(str) {
 //pulls up the response from executing the command,
 //a text box, and a submit button to submit command to server
 function expandCommand(el) {
-    alert("yoooo");
     var divValue = $(el).html();
     $.post(
         '/ExecuteCommand.php', {
@@ -77,22 +76,24 @@ function expandCommand(el) {
 
     function (output) {
         $("#" + divValue).parent().append("<div id='commandinfo'>" + output + "<form id='singleCommand'" +
-            " action='javascript:return false;' method='post'><input type='text' name='command'>" +
-            "<input type='submit' value='Submit' onclick='getResponse()'></div>");
+            " action='' method='post'><input type='text' name='command'>" +
+            "<input type='submit' value='Submit' onclick='getResponse(this, event)'></div>");
     });
 
 }
-//to get response from individual commands
-function getResponse() {
+
+
+function getResponse(me, e) {
+	e.preventDefault()
+	alert($(me).parent().children("input:text[name=command]").val());
     $.post(
         '/ExecuteCommand.php', {
-        command: $('input:text[name=command]').val()
+        command: $(me).parent().children("input:text[name=command]").val()
     },
 
     function (output) {
         $("#serverResponse").append(output);
     });
-    return false;
 }
 	</script>
 

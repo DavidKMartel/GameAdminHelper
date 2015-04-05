@@ -13,7 +13,6 @@ function getServHeader() {
 	if($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "Submit") {
 		handlePost();
 	}
-	echo "success";
 }
 
 ?>

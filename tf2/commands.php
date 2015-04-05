@@ -1,5 +1,9 @@
 <html>
 <head>
+	<style type="text/css">
+		#commandinfo {
+		}
+	</style>
 	<?php
 		include '../UsefulFunctions.php';
 		getServHeader();
@@ -7,54 +11,90 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 </head>
 <body>
-	
+	<div id="search">
+		<form id="searchbar" action="javascript:listCommands()" method='post'>
+			Find:<br>
+			(to return all, enter nothing)<br>
+			<input type='text' name='searchVal'>
+			<input type='submit' value='Submit'>
+		</form>
+	</div>
+
+	<div id="serverResponse">Response: </div>
 
 	<script type="text/javascript">
+
+	//on page load, execute cvarlist to get the list of commands
 	  $(document).ready(function() {
-	  	
-	    $.post(
-            '/ExecuteCommand.php', 
-            { command: "cvarlist"},
-            function(output){
-            	prettify(output);
-                $('#error').html(output).fadeIn(100);
-            }
-        )
+	    listCommands();
 	  });
 
+	  function listCommands() {
+	  	$.post(
+            '/ExecuteCommand.php', 
+            { command: "cvarlist " + $('input:text[name=searchVal]').val()},
+            function(output){
+            	//formatting function prettify(var)
+            	prettify(output);
+            }
+        )
+	  }
 
 	  function prettify(res) {
-	  	var end;
+	  	//lines is each line of output from cvarlist
 	  	var lines = res.split("\n");
-	  	for(var command in lines) {
-	  		end += addHTML(command);
+	  	//end is the end html
+	  	var end = lines[0] + lines[1];
+	  	var i;
+	  	for(i=2; i< lines.length; i++) {
+	  		end += addHTML(lines[i]);
 	  	}
-	  	$('#commandlist').append(end);
+	  	$('#commandlist').html(end);
 	  }
 
+	  //addHTML formats each line
 	  function addHTML(str) {
+	  	//each "column" is broken up by :
 	  	var col = str.split(":");
+	  	//the actual command is the first one
 	  	var command = col[0];
+
 	  	var lineResult = "<div value='";
-	  	lineResult+= command + "' id='"+ command +"' onclick='expandCommand(this)'>" + command + "</div>";
-	  	$('commandlist').append(lineResult);
+	  	lineResult+= command.trim() + "' id='"+ command.trim() +"' onclick='expandCommand(this)'>" 
+	  		+ command.trim() + "</div>";
+	  	return lineResult;
 	  }
-	  function expandCommand(element) {
-	  	var divValue = element.val();
+
+	  //pulls up the response from executing the command,
+	  //a text box, and a submit button to submit command to server
+	  function expandCommand(el) {
+	  	var divValue = $(el).html();
 	  	$.post(
             '/ExecuteCommand.php', 
             { command: divValue},
             function(output){
-            	$("#"+divValue).append(output);
-                $('#error').html(output).fadeIn(100);
+            	$("#"+divValue).append("<div id='commandinfo'>" + output +"<form id='singleCommand'" +
+			  		" action='javascript:getResponse()' method='post'><input type='text' name='command'>" +
+			  		"<input type='submit' value='Submit'></div>");
             }
         )
-	  	$("#"+divValue).append("<div id='commandinfo'><input type='text' name='command'>" + divValue + "</div>");
+	  	
+	  }
+
+	  //to get response from individual commands
+	  function getResponse(el) {
+	  	$.post(
+	  		'/ExecuteCommand.php',
+	  		{command: $('input:text[name=command]').val()},
+	  		function(output){
+            	$("#serverResponse").append(output);
+            })
 	  }
 
 	</script>
 
-	<div id="commandlist">Nothin yet</div>
+	<div id="commandlist"></div>
+	
 
 </body>
 </html>

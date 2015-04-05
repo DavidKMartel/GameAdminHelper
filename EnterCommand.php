@@ -4,9 +4,12 @@
 	session_start();
 	include 'SourceRcon.php';
 
+	$command = "";
+	$response = "";
+
 	if($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "Submit") {
-		handlePost();
-		$response = nl2br($response);
+		
+		$response = nl2br(handlePost());
 	}
 	?>
 

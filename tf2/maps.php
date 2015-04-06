@@ -6,29 +6,57 @@
         getServHeader();
         getNavHeader();
     ?>
+    <style type="text/css">
+      #sub {
+        position: fixed;
+        top:10%;
+      }
+    </style>
+<script type="text/javascript">
+function get(){
+        alert($('input:radio[name=map]:checked').val());
+        $.post(
+            '/ExecuteCommand.php',
+            { command: "changelevel " + $('input:radio[name=map]:checked').val() },
+            function(output){
+              alert($('input:radio[name=map]:checked').val());
+                $('#error').html(output).fadeIn(100);
+            }
+        )       
+    }
+
+</script>
 </head>
 <body>
 <div id="error">
 </div>
 <div id="here" style="text-align:left"> 
-	<form id='mapcommand' action='javascript:alert("success!")' method='post'>
-	</form>
+  <table>
+    <tr>
+      <td>
+    	<form id='mapcommand' action='javascript:alert("success!")' method='post'>
+    	</form>
+      </td>
+      <td>
+        <input id="sub" type='submit' value='Submit' onClick='get()'>
+      </td>
+    </tr>
 </div>
 
 <script type="text/javascript">
 var url='List%20of%20maps%20-%20Official%20TF2%20Wiki%20%20%20Official%20Team%20Fortress%20Wiki.html';
-var end="<input type='submit' value='Submit' onClick='get()'>";
+var end="";
 $.ajax({
        url: url,
        type: 'GET',
        success: function(data) {
        		$(data).find('table.grid').each(function() {
-       			end+="<table class='wikitable sortable grid jquery-tablesorter'>";
+       			end+="<table class='maps'>";
        			$(this).find('tr:first-child').each(function() {
        				end+="<tr>"
        				$(this).find('th:lt(4)').each(function(){
        					
-				  		end+=$(this).html();
+				  		end+= "<th>" + $(this).html() + "</th>";
 				  		
        			})
        				end+="</tr>";
@@ -50,19 +78,6 @@ $.ajax({
             $('#mapcommand').append(end);
        }
      });
-</script><script type="text/javascript">
-function get(){
-        $('#error').hide();
-        $.post(
-            '/ExecuteCommand.php',
-            { command: "changelevel " + $('input:radio[name=map]:checked').val() },
-            function(output){
-            	alert($('input:radio[name=map]:checked').val());
-                $('#error').html(output).fadeIn(100);
-            }
-        )       
-    }
-
 </script>
 
 </body>

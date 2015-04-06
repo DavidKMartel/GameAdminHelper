@@ -1,18 +1,13 @@
 <html>
+<head>
+
+</head>
 <body>
 	<?php
-	session_start();
-	include 'SourceRcon.php';
-
-	$command = "";
-	$response = "";
-
-	if($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "Submit") {
-		
-		$response = nl2br(handlePost());
-	}
-	?>
-
+        include 'UsefulFunctions.php';
+        getServHeader();
+        getNavHeader();
+    ?>
 	<a href="StartSession.php">Connect to new server</a>
 	<form name="SourceRcon" method="POST">
 	<table>

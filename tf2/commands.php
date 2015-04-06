@@ -1,35 +1,5 @@
 <html>
 <head>
-    <style type="text/css">
-    	body {
-    		margin: 0px;
-    		padding-top: 10px;
-    	}
-        #commandinfo {
-            color:#000099;
-            position: relative;
-            right:-20px;
-        }
-        table {
-        	padding: 5px;
-            display: table; 
-            width: inherit; 
-            table-layout: fixed; 
-            position: absolute;
-        }
-        #fixedArea {
-        	z-index: -1;
-            position: relative;
-            width:inherit;
-        }
-        #reply {
-        	top: 20px;
-        }
-        #textarea {
-        	padding-top: 20px;
-        	position: fixed;
-        }
-    </style>
     <?php
         include '../UsefulFunctions.php';
         getServHeader();
@@ -125,7 +95,7 @@ function getMultResponse(me, e) {
 	}
 }
     </script>
-    <table>
+    <table id="commandtable">
         <tr>
             <td>
                 <div id="commandlist"></div>

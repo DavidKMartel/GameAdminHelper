@@ -42,14 +42,16 @@ function get(){
       </td>
     </tr>
 </div>
-
 <script type="text/javascript">
-var url='List%20of%20maps%20-%20Official%20TF2%20Wiki%20%20%20Official%20Team%20Fortress%20Wiki.html';
+$(document).ready( function() {
+
+var url='/tf2/List%20of%20maps%20-%20Official%20TF2%20Wiki%20%20%20Official%20Team%20Fortress%20Wiki.html';
 var end="";
 $.ajax({
        url: url,
        type: 'GET',
        success: function(data) {
+        
        		$(data).find('table.grid').each(function() {
        			end+="<table class='maps'>";
        			$(this).find('tr:first-child').each(function() {
@@ -66,18 +68,25 @@ $.ajax({
 	            	end+="<td><input type='radio' name='map' value ='" + $(this).find('code').html() + "'>";
 	            		end+="</input></td>";
 		            $(this).find('td:lt(4)').each(function(){
-						end+="<td>";
-				  		end+=$(this).html();
-				  		end+="</td>";
-				  })
+      						$(this).find("img").each(function() {
+                    var nonrelpath = $(this).attr('src').replace("./","/tf2/");
+                    $(this).attr('src',nonrelpath);
+                  });
+                  end+="<td>";
+    				  		end+=$(this).html();
+
+    				  		end+="</td>";
+                  
+				  });
 		            end+="</tr>";
 
-				})
+				});
             });
             end+="</table>";
             $('#mapcommand').append(end);
        }
      });
+});
 </script>
 
 </body>

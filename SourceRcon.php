@@ -140,6 +140,8 @@ function handlePost() {
 		$command = $_POST["command"];
 
 		$response = executeCommand($address, $port, $password, $command);
+		$_SESSION['response'] = $response;
+		$_SESSION['command'] = $command;
 		return $response;
 	}
 }

@@ -1,6 +1,9 @@
 <html>
 <head>
-
+	<?php
+        include 'UsefulFunctions.php';
+        getNavHeader();
+    ?>
 </head>
 
 <body>

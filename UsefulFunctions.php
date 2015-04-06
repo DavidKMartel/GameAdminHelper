@@ -14,5 +14,15 @@ function getServHeader() {
 		handlePost();
 	}
 }
+function getNavHeader() {
+	$url='localhost/menu.html';
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+	$html = curl_exec($ch);
+	// Get the status code
+	echo $html;
+	curl_close($ch);
+}
 
 ?>

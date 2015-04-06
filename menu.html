@@ -1,0 +1,88 @@
+<head>
+<style type="text/css">
+body {
+  margin-top: 0;
+  margin-left: 20%;
+  padding-top: 8px;
+  width: 80%;
+  padding-top: 0;
+  padding-left: 10px;
+}
+ul {
+	list-style-type: none;
+}
+#padding {
+	padding-top: 8px;
+}
+
+	ul#menu{
+		padding-top: 10;
+		background-color: #66CCFF;
+		height: 100%;
+		position: fixed;
+		left: 0px;
+		margin-top: 0;
+		list-style-type: none;
+		text-align: center;
+		-webkit-padding-start:0px;
+		width: 20%;
+		z-index:0;
+	}
+	ul#menu li {
+		padding: 2%;
+		text-align: left;
+		display: block;
+	}
+	a{
+		text-decoration: none;
+		color:#000;
+	}
+	ul#menu > ul > li {
+		padding: 0;
+		text-align: center;
+	}
+	ul#menu li ul {
+		-webkit-padding-start:0px;
+		margin-top: 2%;
+		background-color: #FFF;
+		color: #000;
+	}
+	ul#menu li ul li {
+		display: block;
+	}
+	.hasChild:before {
+		color:#FFF;
+		content: ' ►';
+	}
+	.special:before {
+	    content: ' ▼';
+	}
+</style>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+$('.hasChild').click(function(){
+    $(this).attr('data-content','bar');
+});
+function displaySub(el) {
+	var parent = $(el);
+	parent.toggleClass('special');
+	parent.children("#submenu").toggle();
+}
+
+</script>
+</head>
+<ul id="menu">
+	<li><a href="EnterCommand.php">Rcon for Source Servers</a></li>
+	<li><a href="StartSession.php">Start Session</a></li>
+	<li><a href="test.html">Select Map</a></li>
+	<li class="hasChild" onclick="displaySub(this)">TF2
+		<ul style="display:none" id='submenu' value="its me">
+			<li><a href="/tf2">Home</a></li>
+			<li><a href="/tf2/maps.php">Change Maps</a></li>
+			<li><a href="/tf2/commands.php">Other Commands</a></li>
+			<li></li>
+		</ul>
+	</li>
+</ul>
+<div id="padding"></div>

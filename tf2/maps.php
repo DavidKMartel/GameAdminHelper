@@ -1,8 +1,11 @@
-<!DOCTYPE html>
 <html>
 <head>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-<link rel="stylesheet" href="https://wiki.teamfortress.com/w/load.php?debug=false&lang=en&modules=ext.rtlcite%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.skinning.interface%7Cmediawiki.ui.button%7Cskins.vector.styles&only=styles&skin=vector&*">
+    <?php
+        include '../UsefulFunctions.php';
+        getServHeader();
+        getNavHeader();
+    ?>
 </head>
 <body>
 <div id="error">
